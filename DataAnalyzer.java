@@ -1,3 +1,8 @@
+import java.util.Scanner;
+import java.io.File;
+import java.io.IOException;
+import java.util.*;
+
 public class DataAnalyzer{
 
 
@@ -52,12 +57,30 @@ public static int searchList(int target, int[] numbers){
     }
 
     public static void main(String[] args) {
-        int[] arr={10,20,30,40,50};
-        System.out.println(searchList(arr,50));
-        System.out.println(binarySearch(arr,50));
-        int[] reversedArr = reverseList(arr);
-        for (int i=0; i<reversedArr.length; i++){
-            System.out.println(reversedArr[i]+" ");
+        // int[] arr={10,20,30,40,50};
+        // System.out.println(searchList(arr,50));
+        // System.out.println(binarySearch(arr,50));
+        // int[] reversedArr = reverseList(arr);
+        // for (int i=0; i<reversedArr.length; i++){
+        //     System.out.println(reversedArr[i]+" ");
+        // }
+        int[] arr = new int[100];
+        try{
+            File f = new File("numbers.txt");
+            Scanner input = new Scanner(f);
+            for(int i =0; i < 100; i++){
+                arr[i] = input.nextInt();
+            }
+            // read each int from a query
+        }
+        catch(IOException e){
+            System.out.println("file not found");
+        }
+
+        System.out.println(searchList(arr,32));
+        int[] reversearr = (reverseList(arr));
+        for(int i=0; i < reversearr.length; i++){
+            System.out.println(reversearr[i] + " ");
         }
         
     }
