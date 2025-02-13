@@ -84,6 +84,13 @@ public static int searchList(int target, int[] numbers){
         }
         
     }
+    public int toIntArray(int size){
+        int[] arr = new int[size];
+        for(int i=0; i<size; i++){
+            arr[i] = FileReader.nextInt();
+
+        }
+    }
 
 
 
