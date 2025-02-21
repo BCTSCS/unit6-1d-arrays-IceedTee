@@ -1,109 +1,176 @@
-import java.util.Scanner;
 
 public class UserStory {
-    private String[] venueNames;
-    private int[] seatCapacities;
-    private FileOperator venueFile;
-    private FileOperator capacityFile;
+    private String[] countries;
+    private String[] incomes;
+    private double[] internetPercents;
+    private int[] populations;
+    private double[] unemployment;
+
+    private FileOperator countriesFile; 
+    private FileOperator incomeFile;
+    private FileOperator internetpercentFile;
+    private FileOperator populationsFile;
+    private FileOperator unemploymentFile;
 
     public UserStory(){
-        venueFile = new FileOperator("./arenas.txt");
-        capacityFile = new FileOperator("./capacities.txt");
-        venueNames = venueFile.toStringArray(30);
-        seatCapacities = capacityFile.toIntArray(30);
-    }
-    public int findMinCapacity(){
-        int minCapacity = seatCapacities[0];
-        String minVenue = venueNames[0];
-        for (int i=1; i<seatCapacities.length; i++){
-            if (seatCapacities[i] < minCapacity) {
-                minCapacity = seatCapacities[i];
-                minVenue = venueNames[i];
-            }
-        }
-        System.out.println("The minimum capacity: " + minVenue + " with size: " + minCapacity);
-        return minCapacity;
-    }
-    public int findMaxCapacity(){
-        int maxCapacity = seatCapacities[0];
-        String maxVenue = venueNames[0];
-        for (int i=1; i<seatCapacities.length; i++){
-            if (seatCapacities[i] > maxCapacity) {
-                maxCapacity = seatCapacities[i];
-                maxVenue = venueNames[i];
-            }
-        }
-        System.out.println("The maximum capacity: " + maxVenue + " with size: " + maxCapacity);
-        return maxCapacity;
-    }
-    public double computeAvgCapacity(){
-        int totalSeats = 0;
-        for (int capacity: seatCapacities){
-            totalSeats += capacity;
-        }
-        double avgCapacity = (double) totalSeats / seatCapacities.length;
-        System.out.println("Average Capacity: " + String.format("%.2f", avgCapacity));
-        return avgCapacity;
-    }
-    
-    public double computeMedianCapacity() {
-        int[] sortedCapacities = seatCapacities.clone();
-        selectionSort(sortedCapacities);
-        
-        double median;
-        if (sortedCapacities.length % 2 == 0) {
-            median = (double)(sortedCapacities[sortedCapacities.length/2] + 
-                            sortedCapacities[sortedCapacities.length/2 - 1]) / 2;
-        } else {
-            median = sortedCapacities[sortedCapacities.length/2];
-        }
-        System.out.println("Median Capacity: " + String.format("%.2f", median));
-        return median;
+        countriesFile = new FileOperator("countries.txt");
+        incomeFile = new FileOperator("incomes.txt");
+        internetpercentFile = new FileOperator("internetpercent.txt");
+        populationsFile = new FileOperator("populations.txt");
+        unemploymentFile = new FileOperator("unemployment.txt");
+
+        countries = countriesFile.toStringArray(215);
+        incomes = incomeFile.toStringArray(215);
+        internetPercents = internetpercentFile.toDoubleArray(215);
+        populations = populationsFile.toIntArray(215);
+        unemployment = unemploymentFile.toDoubleArray(215);
     }
 
-    public int computeModeCapacity() {
-        int modeValue = seatCapacities[0];
-        int highestFrequency = 1;
-        
-        for (int i = 0; i < seatCapacities.length; i++) {
+    public String getMinInternetCountry(){
+        String country = countries[0];
+        double minInternet = internetPercents[0];
+
+        for (int i = 0; i < internetPercents.length; i++){
+            if (internetPercents[i] < minInternet){
+                minInternet = internetPercents[i];
+                country = countries[i];
+            }
+        }
+
+        return country;
+    }
+
+    public String getMaxInternetCountry(){
+        String country = countries[0];
+        double maxInternet = internetPercents[0];
+
+        for (int i = 0; i < internetPercents.length; i++){
+            if (internetPercents[i] > maxInternet){
+                maxInternet = internetPercents[i];
+                country = countries[i];
+            }
+        }
+
+        return country;
+    }
+
+    public double getAverageInternet(){
+        double total = 0.0;
+        for (double internet : internetPercents){
+            total += internet;
+        }
+
+        double average = total/internetPercents.length;
+
+        return average;
+    }
+
+    public double getModeInternet(){
+        double mode = internetPercents[0];
+        int maxCount = 1;
+        for (int i = 0; i < internetPercents.length; i++){
             int count = 0;
-            for (int j = 0; j < seatCapacities.length; j++) {
-                if (seatCapacities[j] == seatCapacities[i]) {
+            for (int j = 0; j < internetPercents.length; j++){
+                if (internetPercents[j] == internetPercents[i]){
                     count++;
                 }
             }
-            if (count > highestFrequency) {
-                highestFrequency = count;
-                modeValue = seatCapacities[i];
+
+            if (count > maxCount){
+                maxCount = count;
+                mode = internetPercents[i];
             }
         }
-        System.out.println("Mode Capacity: " + modeValue + " (appears " + highestFrequency + " times)");
-        return modeValue;
+
+        return mode;
     }
 
-    private void selectionSort(int[] arr) {
-        int n = arr.length;
-        for (int i = 0; i < n-1; i++) {
-            int minIdx = i;
-            for (int j = i+1; j < n; j++) {
-                if (arr[j] < arr[minIdx]) {
-                    minIdx = j;
+    public double getMedianInternet(){
+        double[] sortedInternet = ascendingDoubleSort(internetPercents);
+
+        double median;
+        if (sortedInternet.length%2 == 0){
+            median = (sortedInternet[sortedInternet.length/2] + sortedInternet[sortedInternet.length/2 - 1]) / 2;
+        }
+        else {
+            median = sortedInternet[sortedInternet.length/2];
+        }
+
+        return median;
+    }
+
+    public String[] findLowestInternetCountries(int numCountries){
+        String[] finalCountries = new String[numCountries];
+        int[] finalCountriesIndexes = new int[numCountries];
+
+        for (int i = 0; i < numCountries; i++){
+            finalCountriesIndexes[i] = i;
+        }
+
+        for (int i = numCountries; i < internetPercents.length; i++){
+            for (int j = 0; j < numCountries; j++){
+                if (internetPercents[i] < internetPercents[finalCountriesIndexes[j]]){
+                    finalCountriesIndexes[j] = i;
+                    break;
                 }
             }
-            int temp = arr[minIdx];
-            arr[minIdx] = arr[i];
-            arr[i] = temp;
         }
+
+        for (int i = 0; i < numCountries; i++){
+            finalCountries[i] = countries[finalCountriesIndexes[i]];
+        }
+
+        return finalCountries;
     }
-    
-    public static void main(String[] args) {
-        UserStory analysis = new UserStory();
-        
-        System.out.println("Arena Capacity Analysis:");
-        analysis.findMinCapacity();
-        analysis.findMaxCapacity();
-        analysis.computeAvgCapacity();
-        analysis.computeMedianCapacity();
-        analysis.computeModeCapacity();
+
+    private int[] ascendingIntSort(int[] arr){
+        for (int i = 0; i < arr.length - 1; i++){
+            int minIndex = i;
+
+            for (int j = i + 1; j < arr.length; j++){
+                if (arr[j] < arr[minIndex]){
+                    minIndex = j;
+                }
+            }
+
+            int tmp = arr[minIndex];
+            arr[minIndex] = arr[i];
+            arr[i] = tmp;
+        }
+
+        return arr;
+    }
+
+    private double[] ascendingDoubleSort(double[] arr){
+        for (int i = 0; i < arr.length - 1; i++){
+            int minIndex = i;
+
+            for (int j = i + 1; j < arr.length; j++){
+                if (arr[j] < arr[minIndex]){
+                    minIndex = j;
+                }
+            }
+
+            double tmp = arr[minIndex];
+            arr[minIndex] = arr[i];
+            arr[i] = tmp;
+        }
+
+        return arr;
+    }
+
+    public static void main(String[] args){
+        UserStory user = new UserStory();
+
+        String[] arr = user.findLowestInternetCountries(20);
+        for (int i = 0; i < arr.length; i++){
+            System.out.println(arr[i]);
+        }
+
+        System.out.println(user.getMinInternetCountry());
+        System.out.println(user.getMaxInternetCountry());
+        System.out.println(user.getAverageInternet());
+        System.out.println(user.getModeInternet());
+        System.out.println(user.getMedianInternet());
     }
 }
